@@ -1,15 +1,96 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sayısal Loto Oyunu</title>
 </head>
 <body>
-    
+    <br/>
+    <h1>Sayısal Loto Oyunu</h1>
+    <p>Aşağıdaki inputlara tahminleri giriniz: </p>
+    <form id="Form">
+        <div id="girdi">
+            <input type="number" id="tahmin1" min="1" max="49" onblur="girdiDogrula(this)">
+            <input type="number" id="tahmin2" min="1" max="49" onblur="girdiDogrula(this)">
+            <input type="number" id="tahmin3" min="1" max="49" onblur="girdiDogrula(this)">
+            <input type="number" id="tahmin4" min="1" max="49" onblur="girdiDogrula(this)">
+            <input type="number" id="tahmin5" min="1" max="49" onblur="girdiDogrula(this)">
+            <input type="number" id="tahmin6" min="1" max="49" onblur="girdiDogrula(this)">
+            <button type="button" id="tahminGir" onclick="tahminleriGonder()">Tahmin Gir</button>
+        </div>
+    </form>
+    <br/><br/><br/>
 
+    <form id="lotoForm">
+        <input type="number" id="loto1" class="sonuclar" disabled />
+        <input type="number" id="loto2" class="sonuclar" disabled />
+        <input type="number" id="loto3" class="sonuclar" disabled />
+        <input type="number" id="loto4" class="sonuclar" disabled />
+        <input type="number" id="loto5" class="sonuclar" disabled />
+        <input type="number" id="loto6" class="sonuclar" disabled /><br/><br/>
+    </form>
+    <button id="kurayiCek" onclick="kurayiCek()" disabled>Kurayı Çek</button><br/>
+    <div id="sonuc"></div>
 
-    <h1>Soru2</h1>
-  
+    <script>
+        const tahminGirdileri = document.querySelectorAll('#girdi input');
+        const tahminGirButton = document.getElementById('tahminGir');
+        const kuraButton = document.getElementById('kurayiCek');
+        const sonucKap = document.getElementById('sonuc');
+        const lotoForm = document.getElementById('lotoForm');
+
+        function girdiDogrula(input) {
+            const deger = parseInt(input.value, 10);
+            if (deger < 1 || deger > 49) {
+                alert('1-49 sayıları arasında bir sayı girmelisiniz');
+                input.value = '';
+                return;
+            }
+
+            let tekrarBulundu = false;
+            tahminGirdileri.forEach(i => {
+                if (i !== input && i.value === input.value) {
+                    tekrarBulundu = true;
+                }
+            });
+
+            if (tekrarBulundu) {
+                alert('Aynı tahmin bir kez girilebilir.');
+                input.value = '';
+            }
+        }
+
+        function tahminleriGonder() {
+            const tahminler = Array.from(tahminGirdileri).map(input => parseInt(input.value, 10));
+            const gecerliTahminler = tahminler.filter((tahmin, index) => tahmin >= 1 && tahmin <= 49 && tahminler.indexOf(tahmin) === index);
+
+            if (gecerliTahminler.length === 6) {
+                tahminGirButton.disabled = true;
+                kuraButton.disabled = false;
+                sonucKap.innerHTML = 'Tahminler: ' + gecerliTahminler.sort((a, b) => a - b).join(', ');
+            } else {
+                alert('Lütfen geçerli tahminler girin.');
+            }
+        }
+
+        function kurayiCek() {
+            const lotoNumaralari = [];
+            while (lotoNumaralari.length < 6) {
+                const rastgeleSayi = Math.floor(Math.random() * 49) + 1;
+                if (!lotoNumaralari.includes(rastgeleSayi)) {
+                    lotoNumaralari.push(rastgeleSayi);
+                }
+            }
+
+            lotoNumaralari.forEach((sayi, index) => {
+                lotoForm.elements[index].value = sayi;
+            });
+
+            const tahminler = Array.from(tahminGirdileri).map(input => parseInt(input.value, 10));
+            const dogruTahminler = lotoNumaralari.filter(sayi => tahminler.includes(sayi));
+
+            sonucKap.innerHTML += '<br>Kura Sonucu: ' + lotoNumaralari.sort((a, b) => a - b).join(', ');
+            sonucKap.innerHTML += '<br>Bildikleriniz: ' + dogruTahminler.join(', ') + '<br>Toplam: ' + dogruTahminler.length;
+        }
+    </script>
 </body>
 </html>
