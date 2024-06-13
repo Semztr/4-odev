@@ -1,11 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>soru1</title>
 </head>
 <body>
      <h1>Soru1</h1>
+     <span>1'den 99'a kadar olan sayıları for döngüsü ile yanyana</span>
+     <button id="siralaBtn" onclick="sirala()">Sırala</button>
+     <br/>
+     <button id="rastgeleBtn" onclick="rastgeleSec()" disabled>Rastgele Sayı Seç</button>   
+    
+     <div id="sonuc"></div>
+
+     <script>
+         function sirala(){
+             var sonucEl = document.getElementById("sonuc");
+             sonucEl.innerHTML = ""; 
+             for(var i = 1; i <= 99; i++) {
+                 var span = document.createElement("span");
+                 span.textContent = i + " ";
+                 sonucEl.appendChild(span);
+                 if (i % 10 === 0) {
+                     sonucEl.appendChild(document.createElement("br"));
+                 }
+             }
+             document.getElementById("siralaBtn").disabled = true; 
+             document.getElementById("rastgeleBtn").disabled = false; 
+         }
+
+         function rastgeleSec() {
+             var rastgeleSayi = Math.floor(Math.random() * 99) + 1;
+             var spanElements = document.getElementById("sonuc").getElementsByTagName("span");
+             for (var i = 0; i < spanElements.length; i++) {
+                 if (spanElements[i].textContent.trim() == rastgeleSayi) {
+                     spanElements[i].style.color = "red";
+                     spanElements[i].style.fontWeight = "bold";
+                     break; 
+                 }
+             }
+         }
+     </script>
 </body>
 </html>
